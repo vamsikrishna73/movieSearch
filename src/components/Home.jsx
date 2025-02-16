@@ -2,18 +2,17 @@ import { useEffect, useState } from "react";
 import { MovieCard } from "./MovieCard";
 import axios from "axios";
 import { useDebounce } from "../utils";
+import {useDispatch,  useSelector} from "react-redux"
+import {setMovies} from '../redux/movieSlice'
 
 function Home() {
-  console.log("API Key:", process.env.REACT_APP_API_KEY);
-console.log("Base URL:", process.env.REACT_APP_URL);
-
+  const dispatch = useDispatch();
   const [query, setQuery] = useState("");
-  const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const debouncedQuery = useDebounce(query, 500);
-  const API_KEY = "75c71088";
-const URL = `http://www.omdbapi.com/?apikey=${API_KEY}`;
+
+  const movies = useSelector(state => state.movies.moviesList)
 
   useEffect(() => {
     if (query) {
@@ -32,9 +31,9 @@ const URL = `http://www.omdbapi.com/?apikey=${API_KEY}`;
       // const response = await axios.get(`${URL}&s=${query}`);
 
       if (response.data.Response === "True") {
-        setMovies(response.data.Search);
+        dispatch(setMovies(response.data.Search));
       } else {
-        setMovies([]);
+       dispatch(setMovies([]));
         setError("No movies found.");
       }
     } catch (err) {

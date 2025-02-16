@@ -1,11 +1,19 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Home from './components/Home'
 import {MovieDetails} from "./components/MovieDetails"
 import {Route, Routes} from "react-router-dom"
+import { useDispatch } from 'react-redux'
+import {setFavorite} from './redux/movieSlice'
 
 const App = () => {
-  console.log("API Key:", process.env.REACT_APP_API_KEY);
-console.log("Base URL:", process.env.REACT_APP_URL);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    const fav =localStorage.getItem("favMovies");
+    if(fav !== null) {
+      const favMovies = JSON.parse(fav)
+      dispatch(setFavorite(favMovies))
+    }
+  }, [])
 
   return (
     <Routes>
